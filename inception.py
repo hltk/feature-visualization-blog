@@ -12,7 +12,7 @@ from torch import nn
 from torch.nn import functional as F
 from relu import ReLUWarmup
 
-CHECKPOINT = Path(__file__).resolve().parents[2] / "checkpoints/inception_v1_mixed5a.npz"
+CHECKPOINT = Path(__file__).resolve().parent / "assets" / "inception_v1_mixed5a.npz"
 
 
 def same_pad(x, kernel, stride=1, value=0):
