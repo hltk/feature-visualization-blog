@@ -4,8 +4,8 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 
-from common import ASSETS, SIZE, maximize
-from views import distill_2017_view
+from shared.common import ASSETS, SIZE, maximize
+from shared.views import distill_2017_view
 
 # Empirical Lucid color matrix. See LICENSES/Lucid.txt.
 COLOR = torch.tensor([[.26, .09, .02], [.27, 0., -.05], [.27, -.09, .03]])

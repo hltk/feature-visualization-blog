@@ -3,7 +3,7 @@ import torch
 from PIL import Image
 from torch.nn import functional as F
 
-from common import ASSETS
+from shared.common import ASSETS
 
 
 def resize(image, size):

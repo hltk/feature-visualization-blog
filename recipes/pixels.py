@@ -1,7 +1,7 @@
 import torch
 from torch.nn import functional as F
 
-from common import SIZE, maximize
+from shared.common import SIZE, maximize
 
 GRAY = 117 / 255
 

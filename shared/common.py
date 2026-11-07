@@ -3,7 +3,7 @@ from pathlib import Path
 import torch
 from PIL import Image
 
-ASSETS = Path(__file__).resolve().parent / "assets"
+ASSETS = Path(__file__).resolve().parents[1] / "assets"
 SIZE = 224
 
 

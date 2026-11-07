@@ -3,12 +3,9 @@ from pathlib import Path
 
 import torch
 
-import cppn
-import dream
-import fourier
-import pixels
-from common import device, save
-from inception import InceptionV1
+from recipes import cppn, dream, fourier, pixels
+from shared.common import device, save
+from shared.inception import InceptionV1
 
 BIRDS = ("mixed4d", 475)
 DAISIES = ("mixed4d", 485)

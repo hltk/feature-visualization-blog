@@ -6,26 +6,26 @@ Each recipe optimizes an image against a frozen Inception v1.
 
 Install uv, then run:
 
-    uv run --locked reproduce.py all
+    uv run --locked python -m scripts.reproduce all
 
 Outputs are individual PNGs under output/<method>/. The cover command
 writes its ten tiles in reading order. Images can vary across devices.
 
 Run a single recipe or a single channel:
 
-    uv run --locked reproduce.py fourier
-    uv run --locked reproduce.py maco --target mixed4d:485
-    uv run --locked reproduce.py all --steps 4 --output output/smoke
+    uv run --locked python -m scripts.reproduce fourier
+    uv run --locked python -m scripts.reproduce maco --target mixed4d:485
+    uv run --locked python -m scripts.reproduce all --steps 4 --output output/smoke
 
 Run with --help for the method list and device options. The default uses
 CUDA or Metal when available and otherwise uses CPU. The full run can
 take a while. --steps shortens it for a quick check.
 
-pixels.py      Pixel ascent, L2, total variation, Gaussian blur, and jitter
-fourier.py     Fourier, phase-only MACO, and Gaussian-centered synthesis
-cppn.py        The unbiased coordinate network
-dream.py       DeepDream on the cloud photo
-reproduce.py   Blog channels, objectives, and cover targets
+scripts/       Entry point and the blog's target channels
+recipes/       Pixel ascent, Fourier methods, CPPN, and DeepDream
+shared/        Inception v1, the optimization loop, and image transforms
+assets/        Frozen weights, magnitude prior, and cloud input
+output/        Generated PNGs
 
 The blog's MACO panels use fixed ImageNet magnitudes and the MACO
 decoder with the 2017 views and Adam schedule. The centered panels use

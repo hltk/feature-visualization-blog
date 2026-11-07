@@ -10,7 +10,7 @@ import torch
 from torch import nn
 
 
-from common import SIZE, maximize
+from shared.common import SIZE, maximize
 
 
 class CPPN(nn.Module):
