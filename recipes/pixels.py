@@ -7,6 +7,7 @@ GRAY = 117 / 255
 
 
 def total_variation(image):
+    # TV with beta = 2, averaged over neighboring RGB differences.
     corner = image[..., :-1, :-1]
     dx = image[..., :-1, 1:] - corner
     dy = image[..., 1:, :-1] - corner
@@ -47,6 +48,7 @@ def render(model, layer, channel, method, steps):
                 view = image.roll(tuple(shift), dims=(-2, -1))
             value = model(view)[layer][:, channel].mean()
             if l2:
+                # The L2 penalty acts on RGB centered at Inception's input mean.
                 value = value - 1000 * (image - GRAY).square().mean()
             if method == "tv-pixels":
                 value = value - 1000 * total_variation(image)
@@ -59,6 +61,7 @@ def render(model, layer, channel, method, steps):
 
         updates = steps // octaves + (octave < steps % octaves)
         maximize(model, [image], score, updates, .05, project=project, warmup=octave == 0)
+        # The next octave starts with resized detail added to its own base noise.
         detail = image.detach() - background
 
     return image.detach()

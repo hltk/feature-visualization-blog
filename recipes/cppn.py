@@ -19,6 +19,7 @@ class CPPN(nn.Module):
         self.hidden = nn.ModuleList()
         inputs = 2
         for _ in range(8):
+            # A 1x1 convolution applies the same MLP layer at every (u, v).
             layer = nn.Conv2d(inputs, 24, 1)
             nn.init.normal_(layer.weight, std=1 / math.sqrt(inputs))
             nn.init.zeros_(layer.bias)
@@ -36,6 +37,7 @@ class CPPN(nn.Module):
         values = self.coordinates
         for layer in self.hidden:
             a = layer(values).atan()
+            # The unbiased variant centers the squared arctangent branch.
             values = torch.cat((a / .67, (a.square() - .45) / .396), dim=1)
         return self.rgb(values).sigmoid()
 

@@ -27,6 +27,7 @@ def render(model, layer, channel, steps):
             view = image.roll((dy, dx), dims=(-2, -1)).requires_grad_()
             energy = model(view)[layer][:, channel].square().mean()
             gradient, = torch.autograd.grad(energy, view)
+            # Normalize the ascent step by the mean absolute pixel gradient.
             update = .018 * gradient / gradient.abs().mean().clamp_min(1e-12)
             image = (view.detach() + update).clamp(0, 1).roll((-dy, -dx), dims=(-2, -1))
         detail = image - base

@@ -23,6 +23,7 @@ def maximize(model, parameters, score, steps, rate, *, project=None, warmup=True
             optimizer.param_groups[0]["lr"] = rate(step)
         optimizer.zero_grad()
         value = score(step)
+        # Adam minimizes, so descend on the negative activation objective.
         (-value).backward()
         optimizer.step()
         if project is not None:

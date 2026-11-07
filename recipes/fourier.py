@@ -17,6 +17,7 @@ def color_mix(image):
 
 
 def activation(features, channel, objective):
+    # The blog's layer, neuron, and channel objectives reduce A[batch, c, u, v].
     if objective == "layer":
         return features.square().mean()
     feature = features[:, channel]
@@ -24,6 +25,7 @@ def activation(features, channel, objective):
     if objective == "neuron":
         return feature[:, height // 2, width // 2].mean()
     if objective == "centered":
+        # Replace the uniform spatial average with a Gaussian around the center.
         y = (torch.arange(height, device=feature.device) - (height - 1) / 2) / height
         x = (torch.arange(width, device=feature.device) - (width - 1) / 2) / width
         weights = (-(y[:, None].square() + x.square()) / (2 * .2 ** 2)).exp()
@@ -44,6 +46,7 @@ def render(model, layer, channel, method, steps, *, objective="channel", strengt
         magnitude = F.interpolate(magnitude, shape[-2:], mode="bilinear", align_corners=False)
 
         def logits(_step):
+            # r exp(i phi), with fixed ImageNet magnitudes r and trainable phases phi.
             spectrum = torch.polar(magnitude, parameter)
             image = torch.fft.irfft2(spectrum, s=(SIZE, SIZE))
             image = (image - image.mean()) / (image.std(correction=0) + 1e-5)
@@ -53,6 +56,7 @@ def render(model, layer, channel, method, steps, *, objective="channel", strengt
         initial = parameter.detach().clone()
         radius = (torch.fft.fftfreq(SIZE)[:, None].square()
                   + torch.fft.rfftfreq(SIZE).square()).sqrt()
+        # In x(z) = IFFT(z * s), s = 1/max(radius, epsilon) preconditions z.
         scale = radius.clamp_min(1 / SIZE).reciprocal()
 
         def logits(step):
@@ -62,6 +66,7 @@ def render(model, layer, channel, method, steps, *, objective="channel", strengt
                 cutoff = .05 + (float(radius.max()) - .05) * progress / .6
                 edge = ((radius - cutoff) / .02).clamp(0, 1)
                 mask = (1 + (math.pi * edge).cos()) / 2
+                # Open higher frequencies to updates as optimization progresses.
                 coefficients = initial + (parameter - initial) * mask[..., None]
             spectrum = torch.view_as_complex(coefficients) * scale
             return color_mix(torch.fft.irfft2(spectrum, s=(SIZE, SIZE), norm="ortho") / 4)
@@ -70,6 +75,7 @@ def render(model, layer, channel, method, steps, *, objective="channel", strengt
 
     def score(step):
         rgb_logits = logits(step)
+        # One random transform estimates the expected activation in the blog.
         view = distill_2017_view(rgb_logits.sigmoid().to(device), views)
         value = activation(model(view)[layer], channel, objective)
         if centered:
