@@ -1,0 +1,7 @@
+{
+  "source": "https://github.com/deel-ai/xplique/blob/7fa573b6534f29f2eaa923522df0190fecb46f62/xplique/features_visualizations/spectrum_decorrelated.npy",
+  "description": "Published MACO/Xplique mean natural-image magnitude prior in decorrelated coordinates",
+  "sha256": "a4810ea049ef9a0fe4e3f26660188e53222281879b333e8fd61377f7491aafc8",
+  "shape": [3, 512, 257],
+  "license": "See LICENSES/Xplique.txt"
+}
