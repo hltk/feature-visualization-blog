@@ -19,7 +19,7 @@ COVER = (
     ("mixed4c", 420), ("mixed4d", 161),
 )
 PIXEL_METHODS = ("pixels", "l2-pixels", "tv-pixels", "l2-gaussian-blur", "jitter-multiscale")
-METHODS = (*PIXEL_METHODS, "fourier", "maco", "centered-2026", "cppn", "dream", "objectives", "cover")
+BLOG_METHODS = (*PIXEL_METHODS, "fourier", "maco", "centered-2026", "cppn", "objectives", "cover")
 
 
 def render(model, method, steps, output, target=None):
@@ -58,7 +58,7 @@ def render(model, method, steps, output, target=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Reproduce the blog's feature visualizations.")
-    parser.add_argument("method", choices=("all", *METHODS))
+    parser.add_argument("method", choices=("all", *BLOG_METHODS, "dream"))
     parser.add_argument("--target", metavar="LAYER:CHANNEL", help="render one channel for a method")
     parser.add_argument("--steps", type=int, help="override updates (per octave for DeepDream)")
     parser.add_argument("--output", type=Path, default=Path("output"))
@@ -80,7 +80,7 @@ def main():
 
     torch.set_num_threads(4)
     model = InceptionV1().to(args.device)
-    for method in METHODS if args.method == "all" else (args.method,):
+    for method in BLOG_METHODS if args.method == "all" else (args.method,):
         steps = args.steps or {"cppn": 512, "dream": 14}.get(method, 2560)
         render(model, method, steps, args.output / method, target)
 

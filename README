@@ -17,6 +17,10 @@ Run a single recipe or a single channel:
     uv run --locked python -m scripts.reproduce maco --target mixed4d:485
     uv run --locked python -m scripts.reproduce all --steps 4 --output output/smoke
 
+The cloud DeepDream recipe is available separately:
+
+    uv run --locked python -m scripts.reproduce dream
+
 Run with --help for the method list and device options. The default uses
 CUDA or Metal when available and otherwise uses CPU. The full run can
 take a while. --steps shortens it for a quick check.
