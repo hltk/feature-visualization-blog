@@ -1,0 +1,43 @@
+Feature visualization
+=====================
+
+PyTorch code for https://henrikaalto.fi/blog/feature-visualization.
+Each recipe optimizes an image against a frozen Inception v1.
+
+Install uv, then run:
+
+    uv run --locked reproduce.py all
+
+Outputs are individual PNGs under output/<method>/. The cover command
+writes its ten tiles in reading order. Images can vary across devices.
+
+Run a single recipe or a single channel:
+
+    uv run --locked reproduce.py fourier
+    uv run --locked reproduce.py maco --target mixed4d:485
+    uv run --locked reproduce.py all --steps 4 --output output/smoke
+
+Run with --help for the method list and device options. The default uses
+CUDA or Metal when available and otherwise uses CPU. The full run can
+take a while. --steps shortens it for a quick check.
+
+pixels.py      Pixel ascent, L2, total variation, Gaussian blur, and jitter
+fourier.py     Fourier, phase-only MACO, and Gaussian-centered synthesis
+cppn.py        The unbiased coordinate network
+dream.py       DeepDream on the cloud photo
+reproduce.py   Blog channels, objectives, and cover targets
+
+The blog's MACO panels use fixed ImageNet magnitudes and the MACO
+decoder with the 2017 views and Adam schedule. The centered panels use
+a Gaussian spatial objective and an RGB prior.
+
+The Inception weights were extracted from the frozen Lucid graph:
+https://storage.googleapis.com/modelzoo/vision/other_models/InceptionV1.pb
+
+The fixed magnitude prior is from Xplique. Its source, checksum, and
+license are in assets/maco_imagenet.json.
+
+The cropped cloud photo is by Rosendahl (public domain):
+https://commons.wikimedia.org/wiki/File:Clouds_in_blue_sky.jpg
+
+See LICENSES/ for the upstream notices.
