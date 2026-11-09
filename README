@@ -44,7 +44,7 @@ Other techniques
 ----------------
 
 2016: DGN-AM
-    uv run --locked python -m setup_models.dgn
+    uv run --locked python -m weights.dgn
     uv run --locked python -m recipes.dgn_am_2016
 
     Setup downloads the original DeePSiM generator archive (~1.2 GiB)
@@ -55,7 +55,7 @@ Other techniques
     uv run --locked python -m recipes.cppns_2018
 
 2022: Classifier as Generator
-    uv run --locked python -m setup_models.mae
+    uv run --locked python -m weights.mae
     uv run --locked --with timm==1.0.22 python -m recipes.classifier_as_generator_2022
 
     Setup downloads the official MAE source and visualization weights

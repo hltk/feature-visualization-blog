@@ -76,7 +76,7 @@ def main():
     cache = ROOT / "data/dgn"
     weights, bounds = cache / "fc6.npz", cache / "fc6-upper.txt"
     if not weights.is_file() or not bounds.is_file():
-        parser.error("Run python -m setup_models.dgn to prepare the fc6 generator and bounds.")
+        parser.error("Run python -m weights.dgn to prepare the fc6 generator and bounds.")
     model = load_model(args)
     generator = DGN(weights).to(args.device)
     upper = torch.from_numpy(np.loadtxt(bounds, dtype=np.float32)).reshape(1, 4096).to(args.device)

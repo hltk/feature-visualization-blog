@@ -6,7 +6,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from setup_models.mae import CACHE
+from weights.mae import CACHE
 from shared.cli import load_model, parse, parser_for
 from shared.common import maximize, save
 
@@ -85,7 +85,7 @@ def main():
     parser = parser_for(__doc__, "classifier_as_generator_2022", steps=1000)
     args = parse(parser)
     if not (CACHE / "runtime/models_mae.py").is_file() or not (CACHE / "mae_visualize_vit_base.pth").is_file():
-        parser.error("Run python -m setup_models.mae to prepare the MAE.")
+        parser.error("Run python -m weights.mae to prepare the MAE.")
     model = load_model(args)
     mae = MaskedAutoencoder().to(args.device)
     image = render(model, mae, args.layer, args.channel, args.steps)

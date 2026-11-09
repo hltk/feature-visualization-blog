@@ -74,7 +74,7 @@ def tensor(data):
 
 
 def main():
-    metadata = json.loads((ROOT / 'setup_models/dgn_generator.json').read_text())
+    metadata = json.loads(Path(__file__).with_name('dgn_generator.json').read_text())
     cache = ROOT / 'data/dgn'
     cache.mkdir(parents=True, exist_ok=True)
     archive_path = cache / 'release_deepsim_v0.zip'
