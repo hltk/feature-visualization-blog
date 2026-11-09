@@ -60,8 +60,14 @@ Other techniques
 
     Setup downloads the official MAE source and visualization weights
     (~427 MiB). This example uses the blog's frozen MAE adaptation with
-    a 224-pixel reconstruction and a center-neuron objective. Here,
-    --steps controls the number of updates per resolution stage.
+    a 224-pixel reconstruction and a center-neuron objective. --steps
+    controls the initial optimization at 64 pixels. The recipe then
+    refines the rounded RGB image for 30 updates with Gaussian gradient
+    blur and averages 12 reconstructions from fresh masks for export.
+
+    The article images were refined from saved runs. This standalone
+    recipe starts from seeded noise and runs one target at a time, so
+    the exported pixels can differ from the article.
 
 2024: DiG-IN
     uv run --locked --with diffusers==0.35.2 --with transformers==4.56.2 --with accelerate==1.10.1 python -m recipes.dig_in_2024

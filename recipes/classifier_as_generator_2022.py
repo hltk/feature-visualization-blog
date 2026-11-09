@@ -5,6 +5,7 @@ import sys
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torchvision.transforms.functional import gaussian_blur
 
 from weights.mae import CACHE
 from shared.cli import load_model, parse, parser_for
@@ -63,22 +64,35 @@ def render(model, mae, layer, channel, steps):
     rng = torch.Generator().manual_seed(1001)
     initial = torch.Generator().manual_seed(11)
     image = (.5 + .1 * torch.randn(1, 3, 64, 64, generator=initial)).clamp(0, 1).to(device)
-    for size, rate in ((64, .05), (128, .025), (256, .0125)):
-        image = F.interpolate(image.detach(), (size, size), mode="bilinear", align_corners=False)
-        image.requires_grad_()
+    image.requires_grad_()
 
-        def score(_step):
-            reconstruction = mae.reconstruct(image, rng)
-            feature = model(reconstruction)[layer][:, channel]
-            return feature[:, feature.shape[-2] // 2, feature.shape[-1] // 2].mean()
+    def score(_step):
+        reconstruction = mae.reconstruct(image, rng)
+        feature = model(reconstruction)[layer][:, channel]
+        return feature[:, feature.shape[-2] // 2, feature.shape[-1] // 2].mean()
 
-        def project(_step):
-            image.clamp_(0, 1)
+    def project(_step):
+        image.clamp_(0, 1)
 
-        maximize(model, [image], score, steps, rate, project=project, warmup=size == 64)
+    maximize(model, [image], score, steps, .05, project=project)
+
+    # The article refinement starts from an 8-bit RGB checkpoint.
+    image = ((image.detach() * 255).round() / 255).requires_grad_()
+    blur = image.register_hook(lambda gradient: gaussian_blur(gradient, 9, 1.5))
+
+    def refinement_score(step):
+        rng.manual_seed(41001 + step)
+        return score(step)
+
+    try:
+        maximize(model, [image], refinement_score, 30, .025, project=project, warmup=False)
+    finally:
+        blur.remove()
 
     with torch.no_grad():
-        return mae.reconstruct(image, torch.Generator().manual_seed(9001))
+        rng.manual_seed(51001)
+        reconstructions = [mae.reconstruct(image, rng).clamp(0, 1) for _ in range(12)]
+        return torch.stack(reconstructions).mean(0)
 
 
 def main():
