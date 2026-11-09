@@ -81,10 +81,6 @@ objectives. For the layer objective, the channel index is ignored.
     uv run --locked python -m recipes.centered_fourier_2026 --objective channel
     uv run --locked python -m recipes.centered_fourier_2026 --objective layer --target mixed3a:0 --strength .15
 
-The DeepDream cloud example starts from a photo:
-
-    uv run --locked python -m recipes.deepdream
-
 Each command supports --help, --target LAYER:CHANNEL, --device, --steps,
 and --output DIRECTORY. By default, the images go under output/ with
 one directory per technique. Reduce --steps to try a quick run.
@@ -97,9 +93,6 @@ https://storage.googleapis.com/modelzoo/vision/other_models/InceptionV1.pb
 
 The fixed magnitude prior is from Xplique. Its source, checksum, and
 license are in assets/maco_imagenet.json.
-
-The cropped cloud photo is by Rosendahl (public domain):
-https://commons.wikimedia.org/wiki/File:Clouds_in_blue_sky.jpg
 
 See LICENSES/ for the upstream notices. Additional model downloads are
 cached outside the tracked files.
