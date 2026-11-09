@@ -1,39 +1,96 @@
 Feature visualization
 =====================
 
-PyTorch code for https://henrikaalto.fi/blog/feature-visualization.
-Each recipe optimizes an image against a frozen Inception v1.
+PyTorch examples for https://henrikaalto.fi/blog/feature-visualization.
+Run each chapter's Python module from this repository's root with uv.
+The examples use a frozen Inception v1 to score the generated images.
 
-Install uv, then run:
+Main Timeline
+-------------
 
-    uv run --locked python -m scripts.reproduce all
+2009: First Images
+    uv run --locked python -m recipes.first_images_2009
 
-Outputs are individual PNGs under output/<method>/. The cover command
-writes its ten tiles in reading order. Images can vary across devices.
+2013: Weight Decay
+    uv run --locked python -m recipes.weight_decay_2013
 
-Run a single recipe or a single channel:
+2014: Total Variation
+    uv run --locked python -m recipes.total_variation_2014
 
-    uv run --locked python -m scripts.reproduce fourier
-    uv run --locked python -m scripts.reproduce maco --target mixed4d:485
-    uv run --locked python -m scripts.reproduce all --steps 4 --output output/smoke
+2015: Gaussian Blur
+    uv run --locked python -m recipes.gaussian_blur_2015
 
-The cloud DeepDream recipe is available separately:
+2015: Random Shifts
+    uv run --locked python -m recipes.random_shifts_2015
 
-    uv run --locked python -m scripts.reproduce dream
+2017: Fourier
+    uv run --locked python -m recipes.fourier_2017
 
-Run with --help for the method list and device options. The default uses
-CUDA or Metal when available and otherwise uses CPU. The full run can
-take a while. --steps shortens it for a quick check.
+2023: MACO
+    uv run --locked python -m recipes.maco_2023
 
-scripts/       Entry point and the blog's target channels
-recipes/       Pixel ascent, Fourier methods, CPPN, and DeepDream
-shared/        Inception v1, the optimization loop, and image transforms
-assets/        Frozen weights, magnitude prior, and cloud input
-output/        Generated PNGs
+    Uses the MACO decoder and fixed ImageNet magnitudes with the 2017
+    transforms and Adam schedule, as in the article's figure.
 
-The blog's MACO panels use fixed ImageNet magnitudes and the MACO
-decoder with the 2017 views and Adam schedule. The centered panels use
-a Gaussian spatial objective and an RGB prior.
+2026: Path Guidance
+    The Gaussian-centered Fourier example shown in this section runs with:
+
+    uv run --locked python -m recipes.centered_fourier_2026
+
+    Path guidance itself is omitted. It uses reference images and
+    activation routes derived from them.
+
+Other techniques
+----------------
+
+2016: DGN-AM
+    uv run --locked python -m setup_models.dgn
+    uv run --locked python -m recipes.dgn_am_2016
+
+    Setup downloads the original DeePSiM generator archive (~1.2 GiB)
+    and extracts the fc6 weights. It also fetches the published latent
+    bounds. The weights are for research use under the upstream terms.
+
+2018: CPPNs
+    uv run --locked python -m recipes.cppns_2018
+
+2022: Classifier as Generator
+    uv run --locked python -m setup_models.mae
+    uv run --locked --with timm==1.0.22 python -m recipes.classifier_as_generator_2022
+
+    Setup downloads the official MAE source and visualization weights
+    (~427 MiB). This example uses the blog's frozen MAE adaptation with
+    a 224-pixel reconstruction and a center-neuron objective. Here,
+    --steps controls the number of updates per resolution stage.
+
+2024: DiG-IN
+    uv run --locked --with diffusers==0.35.2 --with transformers==4.56.2 --with accelerate==1.10.1 python -m recipes.dig_in_2024
+
+    The first run fetches Stable Diffusion v1.4 weights. A GPU is
+    recommended. Pass --model for a local Diffusers checkpoint and
+    --prompt to choose the text conditioning. The three targets from the
+    blog have preset prompts, so no dataset ranking or captioner is needed.
+
+Different Objectives
+--------------------
+
+The centered Fourier example also exposes neuron, channel, and layer
+objectives. For the layer objective, the channel index is ignored.
+
+    uv run --locked python -m recipes.centered_fourier_2026 --objective neuron
+    uv run --locked python -m recipes.centered_fourier_2026 --objective channel
+    uv run --locked python -m recipes.centered_fourier_2026 --objective layer --target mixed3a:0 --strength .15
+
+The DeepDream cloud example starts from a photo:
+
+    uv run --locked python -m recipes.deepdream
+
+Each command supports --help, --target LAYER:CHANNEL, --device, --steps,
+and --output DIRECTORY. By default, the images go under output/ with
+one directory per technique. Reduce --steps to try a quick run.
+
+Assets
+------
 
 The Inception weights were extracted from the frozen Lucid graph:
 https://storage.googleapis.com/modelzoo/vision/other_models/InceptionV1.pb
@@ -44,4 +101,5 @@ license are in assets/maco_imagenet.json.
 The cropped cloud photo is by Rosendahl (public domain):
 https://commons.wikimedia.org/wiki/File:Clouds_in_blue_sky.jpg
 
-See LICENSES/ for the upstream notices.
+See LICENSES/ for the upstream notices. Additional model downloads are
+cached outside the tracked files.
