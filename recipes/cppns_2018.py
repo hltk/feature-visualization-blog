@@ -1,4 +1,4 @@
-"""Coordinate-to-RGB parameterization from the 2018 Distill notebook.
+"""2018: CPPNs. Coordinate-to-RGB parameterization from Distill.
 
 Copyright 2018 The Lucid Authors. Apache-2.0; see LICENSES/Lucid.txt.
 Port of notebooks/differentiable-parameterizations/xy2rgb.ipynb at
@@ -10,6 +10,7 @@ import torch
 from torch import nn
 
 
+from shared.cli import run
 from shared.common import SIZE, maximize
 
 
@@ -51,3 +52,7 @@ def render(model, layer, channel, steps):
     maximize(model, image.parameters(), score, steps, .005)
     with torch.no_grad():
         return image()
+
+
+if __name__ == "__main__":
+    run(render, "2018: CPPNs", "cppns_2018", steps=512)

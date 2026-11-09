@@ -1,8 +1,10 @@
+"""DeepDream from a cloud photo."""
 import numpy as np
 import torch
 from PIL import Image
 from torch.nn import functional as F
 
+from shared.cli import run
 from shared.common import ASSETS
 
 
@@ -32,3 +34,7 @@ def render(model, layer, channel, steps):
             image = (view.detach() + update).clamp(0, 1).roll((-dy, -dx), dims=(-2, -1))
         detail = image - base
     return image
+
+
+if __name__ == "__main__":
+    run(render, __doc__, "deepdream", steps=14, target="mixed4d:475")
