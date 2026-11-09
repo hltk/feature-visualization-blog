@@ -1,4 +1,4 @@
-"""Prepare the frozen MAE used by the Classifier as Generator example."""
+"""Prepare the frozen MAE used by the Masked Autoencoders example."""
 import hashlib
 from pathlib import Path
 import urllib.request

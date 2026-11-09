@@ -1,4 +1,4 @@
-"""2022: Classifier as Generator, using the blog's frozen MAE adaptation."""
+"""2022: Masked Autoencoders, using the blog's frozen MAE adaptation."""
 import importlib.util
 import sys
 
@@ -96,7 +96,7 @@ def render(model, mae, layer, channel, steps):
 
 
 def main():
-    parser = parser_for(__doc__, "classifier_as_generator_2022", steps=1000)
+    parser = parser_for(__doc__, "masked_autoencoders_2022", steps=1000)
     args = parse(parser)
     if not (CACHE / "runtime/models_mae.py").is_file() or not (CACHE / "mae_visualize_vit_base.pth").is_file():
         parser.error("Run python -m weights.mae to prepare the MAE.")

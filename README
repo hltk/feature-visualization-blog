@@ -1,9 +1,10 @@
 Feature visualization
 =====================
 
-PyTorch examples for https://henrikaalto.fi/blog/feature-visualization.
-Run each chapter's Python module from this repository's root with uv.
-The examples use a frozen Inception v1 to score the generated images.
+Reproduction source code for the article _A Survey of Activation Maximization_
+at https://henrikaalto.fi/blog/feature-visualization.
+
+Each chapter has a Python module that should be ran from the repo's root with uv.
 
 Main Timeline
 -------------
@@ -29,16 +30,8 @@ Main Timeline
 2023: MACO
     uv run --locked python -m recipes.maco_2023
 
-    Uses the MACO decoder and fixed ImageNet magnitudes with the 2017
-    transforms and Adam schedule, as in the article's figure.
-
 2026: Path Guidance
-    The Gaussian-centered Fourier example shown in this section runs with:
-
-    uv run --locked python -m recipes.centered_fourier_2026
-
-    Path guidance itself is omitted. It uses reference images and
-    activation routes derived from them.
+    <omitted>
 
 Other techniques
 ----------------
@@ -47,49 +40,15 @@ Other techniques
     uv run --locked python -m weights.dgn
     uv run --locked python -m recipes.dgn_am_2016
 
-    Setup downloads the original DeePSiM generator archive (~1.2 GiB)
-    and extracts the fc6 weights. It also fetches the published latent
-    bounds. The weights are for research use under the upstream terms.
-
 2018: CPPNs
     uv run --locked python -m recipes.cppns_2018
 
-2022: Classifier as Generator
+2022: Masked Autoencoders
     uv run --locked python -m weights.mae
-    uv run --locked --with timm==1.0.22 python -m recipes.classifier_as_generator_2022
-
-    Setup downloads the official MAE source and visualization weights
-    (~427 MiB). This example uses the blog's frozen MAE adaptation with
-    a 224-pixel reconstruction and a center-neuron objective. --steps
-    controls the initial optimization at 64 pixels. The recipe then
-    refines the rounded RGB image for 30 updates with Gaussian gradient
-    blur and averages 12 reconstructions from fresh masks for export.
-
-    The article images were refined from saved runs. This standalone
-    recipe starts from seeded noise and runs one target at a time, so
-    the exported pixels can differ from the article.
+    uv run --locked python -m recipes.masked_autoencoders_2022
 
 2024: DiG-IN
-    uv run --locked --with diffusers==0.35.2 --with transformers==4.56.2 --with accelerate==1.10.1 python -m recipes.dig_in_2024
-
-    The first run fetches Stable Diffusion v1.4 weights. A GPU is
-    recommended. Pass --model for a local Diffusers checkpoint and
-    --prompt to choose the text conditioning. The three targets from the
-    blog have preset prompts, so no dataset ranking or captioner is needed.
-
-Different Objectives
---------------------
-
-The centered Fourier example also exposes neuron, channel, and layer
-objectives. For the layer objective, the channel index is ignored.
-
-    uv run --locked python -m recipes.centered_fourier_2026 --objective neuron
-    uv run --locked python -m recipes.centered_fourier_2026 --objective channel
-    uv run --locked python -m recipes.centered_fourier_2026 --objective layer --target mixed3a:0 --strength .15
-
-Each command supports --help, --target LAYER:CHANNEL, --device, --steps,
-and --output DIRECTORY. By default, the images go under output/ with
-one directory per technique. Reduce --steps to try a quick run.
+    uv run --locked python -m recipes.dig_in_2024
 
 Assets
 ------
